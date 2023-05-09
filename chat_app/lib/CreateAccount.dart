@@ -1,3 +1,4 @@
+import 'package:chat_app/Methods.dart';
 import 'package:flutter/material.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -9,6 +10,7 @@ class _CreateAccountState extends State<CreateAccount> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _password= TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -102,7 +104,33 @@ class _CreateAccountState extends State<CreateAccount> {
 
   Widget customButton(Size size) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (_name.text.isNotEmpty &&
+            _email.text.isNotEmpty &&
+            _password.text.isNotEmpty) {
+          setState(() {
+            isLoading = true;
+          });
+
+          createAccount(_name.text, _email.text, _password.text).then((user) {
+            if (user != null) {
+              setState(() {
+                isLoading = false;
+              });
+              //Navigator.push(
+                  //context, MaterialPageRoute(builder: (_) => HomeScreen()));
+              print("Account Created Sucessfull");
+            } else {
+              print("Login Failed");
+              setState(() {
+                isLoading = false;
+              });
+            }
+          });
+        } else {
+          print("Please enter Fields");
+        }
+      },
       child: Container(
         height: size.height / 14,
         width: size.width / 1.2,
